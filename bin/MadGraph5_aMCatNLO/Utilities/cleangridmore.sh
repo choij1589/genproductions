@@ -31,9 +31,9 @@ find ./ -name "*.h" | xargs -r rm
 find ./ -name "test_soft_col_limits" | xargs -r rm 
 
 rm -r mgbasedir/tests/
-rm -r mgbasedir/doc
+#rm -r mgbasedir/doc
 rm -r mgbasedir/LICENSE 
-rm -r mgbasedir/README 
+#rm -r mgbasedir/README 
 rm -r mgbasedir/UpdateNotes.txt
 
 if [ -d ./process/SubProcesses ]; then 

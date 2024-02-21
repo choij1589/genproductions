@@ -1,6 +1,17 @@
+diff --git a/madgraph/various/systematics.py b/madgraph/various/systematics.py
+index 28eaed0..5f787de 100644
 --- a/madgraph/various/systematics.py
 +++ b/madgraph/various/systematics.py
-@@ -339,7 +339,7 @@ class Systematics(object):
+@@ -169,7 +169,7 @@ class Systematics(object):
+         self.orig_ion_pdf = False
+         self.ion_scaling = ion_scaling
+         self.only_beam = only_beam 
+-        if isinstance(self.banner.run_card, banner_mod.RunCardLO):
++        if self.banner.run_card.LO:
+             self.is_lo = True
+             if not self.banner.run_card['use_syst']:
+                 raise SystematicsError('The events have not been generated with use_syst=True. Cannot evaluate systematics error on these events.')
+@@ -398,7 +398,7 @@ class Systematics(object):
          else:
              lowest_id = self.get_id()        
  
@@ -9,7 +20,7 @@
          #ids = [lowest_id+i for i in range(len(self.args)-1)]
          all_cross = [0 for i in range(len(self.args))]
          
-@@ -374,7 +374,7 @@ class Systematics(object):
+@@ -435,7 +435,7 @@ class Systematics(object):
                  print(event)
                  raise Exception
              
@@ -18,12 +29,12 @@
              all_cross = [(all_cross[j] + event.wgt*wgts[j]/wgts[0]) for j in range(len(wgts))]
              
              rwgt_data = event.parse_reweight()
-@@ -548,7 +548,7 @@ class Systematics(object):
+@@ -615,7 +615,7 @@ class Systematics(object):
          text = ''
-         
+ 
          default = self.args[0]
 -        for arg in self.args[1:]:
-+        for arg in self.args[0:]:
++        for arg in self.args:
              mur, muf, alps, dyn, pdf = arg[:5]
              if pdf == self.orig_pdf and alps ==1 and (mur!=1 or muf!=1 or dyn!=-1):
                  if not in_scale:

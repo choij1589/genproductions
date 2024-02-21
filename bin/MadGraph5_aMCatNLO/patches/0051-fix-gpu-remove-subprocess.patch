@@ -1,0 +1,14 @@
+diff --git a/madgraph/interface/madevent_interface.py b/madgraph/interface/madevent_interface.py
+index 8c509e83f..e6e7bd0dc 100755
+--- a/madgraph/interface/madevent_interface.py
++++ b/madgraph/interface/madevent_interface.py
+@@ -3966,7 +3966,8 @@ Beware that this can be dangerous for local multicore runs.""")
+         Pdir = set([os.path.dirname(G) for G in Gdir])
+         for P in Pdir:
+             allG = misc.glob('G*', path=P)
+-            for G in allG:
++            filG = [f for f in allG if not os.path.basename(f).startswith('Gpu')]
++            for G in filG:
+                 if pjoin(P, G) not in Gdir:
+                     logger.debug('removing %s', pjoin(P,G))
+                     shutil.rmtree(pjoin(P,G))

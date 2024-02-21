@@ -136,10 +136,10 @@ make_gridpack () {
     MGBASEDIR=mgbasedir
     
     MG_EXT=".tar.gz"
-    MG=MG5_aMC_v2.9.18$MG_EXT
-    MGSOURCE=https://cms-project-generators.web.cern.ch/cms-project-generators/$MG
+    MG="mg4gpu_2024-02-21${MG_EXT}"
+    MGSOURCE="/eos/user/c/choij/public/Archive/madgraph4gpu/${MG}"
     
-    MGBASEDIRORIG=$(echo ${MG%$MG_EXT} | tr "." "_")
+    MGBASEDIRORIG="madgraph4gpu/MG5aMC/mg5amcnlo/"
     isscratchspace=0
     
     if [ ! -d ${GEN_FOLDER}/${name}_gridpack ]; then
@@ -170,6 +170,8 @@ make_gridpack () {
       cd ${name}_gridpack ; mkdir -p work ; cd work
       WORKDIR=`pwd`
       eval `scram runtime -sh`
+	  export CUDA_HOME="/cvmfs/cms.cern.ch/el8_amd64_gcc11/external/cuda/11.8.0-9f0af0f4206be7b705fe550319c49a11"
+	  export MADGRAPH_CUDA_ARCHITECTURE=80
 
       if [[ $queue == *"condor"* ]]; then
         echo "Use HTCondor for gridpack generation"
@@ -179,9 +181,9 @@ make_gridpack () {
       #############################################
       #Copy, Unzip and Delete the MadGraph tarball#
       #############################################
-      wget --no-check-certificate ${MGSOURCE}
-      tar xzf ${MG}
-      rm "$MG"
+	  echo "Preparing mg4gpu directory from ${MGSOURCE}"
+	  # pigz -d -c ${MGSOURCE} | tar -x	# not working in lxplus8
+	  tar -xf ${MGSOURCE}
     
       #############################################
       #Apply any necessary patches on top of official release
@@ -711,7 +713,7 @@ else
     if [[ $SYSTEM_RELEASE == *"release 7"* ]]; then 
         scram_arch=slc7_amd64_gcc10 
     elif [[ $SYSTEM_RELEASE == *"release 8"* ]]; then
-        scram_arch=el8_amd64_gcc10
+        scram_arch=el8_amd64_gcc11
     elif [[ $SYSTEM_RELEASE == *"release 9"* ]]; then
         scram_arch=el9_amd64_gcc11
     else 
@@ -727,7 +729,7 @@ else
     if [[ $SYSTEM_RELEASE == *"release 7"* ]]; then 
         cmssw_version=CMSSW_12_4_8
     elif [[ $SYSTEM_RELEASE == *"release 8"* ]]; then
-        cmssw_version=CMSSW_12_4_8
+        cmssw_version=CMSSW_13_2_9
     elif [[ $SYSTEM_RELEASE == *"release 9"* ]]; then
 	cmssw_version=CMSSW_13_2_9
     else 
