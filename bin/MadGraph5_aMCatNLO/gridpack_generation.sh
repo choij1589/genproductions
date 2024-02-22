@@ -182,8 +182,8 @@ make_gridpack () {
       #Copy, Unzip and Delete the MadGraph tarball#
       #############################################
 	  echo "Preparing mg4gpu directory from ${MGSOURCE}"
-	  # pigz -d -c ${MGSOURCE} | tar -x	# not working in lxplus8
-	  tar -xf ${MGSOURCE}
+	  pigz -d -c ${MGSOURCE} | tar -x	# not working in lxplus8
+	  #tar -xf ${MGSOURCE}
     
       #############################################
       #Apply any necessary patches on top of official release
