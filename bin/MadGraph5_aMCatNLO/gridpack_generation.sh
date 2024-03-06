@@ -137,7 +137,8 @@ make_gridpack () {
     
     MG_EXT=".tar.gz"
     MG="mg4gpu_2024-02-21${MG_EXT}"
-    MGSOURCE="/eos/user/c/choij/public/Archive/madgraph4gpu/${MG}"
+    #MGSOURCE="/eos/user/c/choij/public/Archive/madgraph4gpu/${MG}"
+    MGSOURCE="/data9/Users/choij/GPUtest/Archive/madgraph4gpu/${MG}"
     
     MGBASEDIRORIG="madgraph4gpu/MG5aMC/mg5amcnlo/"
     isscratchspace=0
@@ -182,8 +183,9 @@ make_gridpack () {
       #Copy, Unzip and Delete the MadGraph tarball#
       #############################################
 	  echo "Preparing mg4gpu directory from ${MGSOURCE}"
-	  # pigz -d -c ${MGSOURCE} | tar -x	# not working in lxplus8
-	  tar -xf ${MGSOURCE}
+	  pigz -d -c ${MGSOURCE} | tar -x
+      cp /data9/Users/choij/GPUtest/genproductions/bin/MadGraph5_aMCatNLO/fix_gpu_plugin.patch madgraph4gpu/ && git -C madgraph4gpu apply fix_gpu_plugin.patch
+	  #tar -xf ${MGSOURCE}
     
       #############################################
       #Apply any necessary patches on top of official release

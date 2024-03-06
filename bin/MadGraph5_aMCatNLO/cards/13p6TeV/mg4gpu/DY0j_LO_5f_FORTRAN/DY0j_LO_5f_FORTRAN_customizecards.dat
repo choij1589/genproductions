@@ -1,0 +1,3 @@
+set sde_strategy 1
+set vector_size 1
+set cudacpp_backend FORTRAN

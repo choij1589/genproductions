@@ -7,6 +7,6 @@ define ell- = e- mu- ta-
 define nu = ve vm vt
 define nubar = ve~ vm~ vt~
 
-generate p p > ell+ ell- @0
+generate p p > ell+ ell- j @0
 
-output madevent_gpu DY0j_LO_5f_CPP -nojpeg
+output madevent_gpu DY1j_LO_5f_FORTRAN -nojpeg
