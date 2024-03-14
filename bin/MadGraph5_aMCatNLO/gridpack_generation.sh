@@ -137,8 +137,9 @@ make_gridpack () {
     
     MG_EXT=".tar.gz"
     MG="mg4gpu_2024-03-14${MG_EXT}"
-    MGSOURCE="/eos/user/c/choij/public/Archive/madgraph4gpu/${MG}"
-	#PATCHSOURCE="/eos/user/c/choij/public/Archive/patches/fix_gpu_plugin.patch"
+    MGSOURCE="${WORKDIR}/${MG}"
+	#MGSOURCE="/eos/user/c/choij/public/Archive/madgraph4gpu/${MG}"
+	PATCHSOURCE="{WORKDIR}/fix_gpu_plugin.patch"
     
     MGBASEDIRORIG="madgraph4gpu/MG5aMC/mg5amcnlo/"
     isscratchspace=0
@@ -184,7 +185,7 @@ make_gridpack () {
       #############################################
 	  echo "Preparing mg4gpu directory from ${MGSOURCE}"
 	  pigz -d -c ${MGSOURCE} | tar -x
-      #cp ${PATCHSOURCE} madgraph4gpu/ && git -C madgraph4gpu apply fix_gpu_plugin.patch
+      cp ${PATCHSOURCE} madgraph4gpu/ && git -C madgraph4gpu apply fix_gpu_plugin.patch
 	  #tar -xf ${MGSOURCE}
     
       #############################################
