@@ -18,7 +18,8 @@ generator = cms.EDFilter("Pythia8HadronizerFilter",
         pythia8CP5SettingsBlock,
         pythia8PSweightsSettingsBlock,
         exclusive_process = cms.vstring(
-            # Recomendation from SuperChic v5.0
+            # Recomendation from https://anstahll.web.cern.ch/anstahll/superchic/SuperChic_5_1.pdf
+            # For purely elastic production (diff set to el)
             'PartonLevel:ISR = off',
             'PartonLevel:MPI = off',
             'PartonLevel:Remnants = off',
@@ -31,7 +32,7 @@ generator = cms.EDFilter("Pythia8HadronizerFilter",
         ),
         parameterSets = cms.vstring('pythia8CommonSettings','pythia8CP5Settings','pythia8PSweightsSettings','exclusive_process')
     ),
-    comEnergy = cms.double(5360.0),
+    comEnergy = cms.double(5362.0),
     filterEfficiency = cms.untracked.double(1.0),
     maxEventsToPrint = cms.untracked.int32(1),
     pythiaHepMCVerbosity = cms.untracked.bool(False),
