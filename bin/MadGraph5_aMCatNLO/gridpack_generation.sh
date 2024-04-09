@@ -186,9 +186,9 @@ make_gridpack () {
       #Copy, Unzip and Delete the MadGraph tarball#
       #############################################
 	  echo "Preparing mg4gpu directory from ${MGSOURCE}"
-	  pigz -d -c ${MGSOURCE} | tar -x
+	  #pigz -d -c ${MGSOURCE} | tar -x
+	  tar -xf ${MGSOURCE}
       cp ${PATCHSOURCE} madgraph4gpu/ && git -C madgraph4gpu apply fix_gpu_plugin.patch
-	  #tar -xf ${MGSOURCE}
     
       #############################################
       #Apply any necessary patches on top of official release
