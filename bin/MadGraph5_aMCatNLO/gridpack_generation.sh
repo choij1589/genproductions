@@ -137,9 +137,9 @@ make_gridpack () {
     
     MG_EXT=".tar.gz"
     MG="mg4gpu_2024-07-30${MG_EXT}"
-    MGSOURCE="/srv/work/${MG}"
+    #MGSOURCE="/srv/work/${MG}"
 	#MGSOURCE="/eos/user/c/choij/public/Archive/madgraph4gpu/${MG}"
-    #MGSOURCE="/home/devuser/workspace/MG4GPU/Test_Aug_Week1/${MG}"
+    MGSOURCE="/home/devuser/workspace/MG4GPU/Test_Aug_Week1/${MG}"
 	#PATCHSOURCE="/srv/work/fix_gpu_plugin.patch"
 	#PATCHSOURCE="/afs/cern.ch/work/c/choij/public/mg4gpu/fix_gpu_plugin.patch"
     
@@ -175,7 +175,7 @@ make_gridpack () {
       WORKDIR=`pwd`
       eval `scram runtime -sh`
 	  #export CUDA_HOME="/cvmfs/cms.cern.ch/el8_amd64_gcc11/external/cuda/11.8.0-9f0af0f4206be7b705fe550319c49a11"
-	  export MADGRAPH_CUDA_ARCHITECTURE=80
+	  export MADGRAPH_CUDA_ARCHITECTURE=60
 
       if [[ $queue == *"condor"* ]]; then
         echo "Use HTCondor for gridpack generation"
@@ -186,8 +186,8 @@ make_gridpack () {
       #Copy, Unzip and Delete the MadGraph tarball#
       #############################################
 	  echo "Preparing mg4gpu directory from ${MGSOURCE}"
-	  pigz -d -c ${MGSOURCE} | tar -x
-	  #tar -xf ${MGSOURCE}
+	  #pigz -d -c ${MGSOURCE} | tar -x
+	  tar -xf ${MGSOURCE}
       #cp ${PATCHSOURCE} madgraph4gpu/ && git -C madgraph4gpu apply fix_gpu_plugin.patch
     
       #############################################
