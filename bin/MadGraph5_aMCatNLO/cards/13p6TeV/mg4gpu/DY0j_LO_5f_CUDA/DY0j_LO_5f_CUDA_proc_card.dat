@@ -1,5 +1,4 @@
 import model sm-no_b_mass
-# set nb_core 10	# max core in lxplus8 node
 
 define p = u d c s b u~ d~ c~ s~ b~ g
 define j = p

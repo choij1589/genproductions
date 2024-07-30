@@ -1,0 +1,13 @@
+import model sm-no_b_mass
+# set nb_core 10
+
+define p = u d c s b u~ d~ c~ s~ b~ g
+define j = p
+define ell+ = e+ mu+ ta+
+define ell- = e- mu- ta-
+define nu = ve vm vt
+define nubar = ve~ vm~ vt~
+
+generate p p > ell+ ell- j j @0
+
+output madevent_gpu DY2j_LO_5f_CUDA -nojpeg

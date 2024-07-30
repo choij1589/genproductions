@@ -1,3 +1,2 @@
 set sde_strategy 1
-set vector_size 8192
 set cudacpp_backend CUDA

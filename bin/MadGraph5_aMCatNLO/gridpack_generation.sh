@@ -136,10 +136,11 @@ make_gridpack () {
     MGBASEDIR=mgbasedir
     
     MG_EXT=".tar.gz"
-    MG="mg4gpu_2024-06-24${MG_EXT}"
+    MG="mg4gpu_2024-07-30${MG_EXT}"
     MGSOURCE="/srv/work/${MG}"
 	#MGSOURCE="/eos/user/c/choij/public/Archive/madgraph4gpu/${MG}"
-	PATCHSOURCE="/srv/work/fix_gpu_plugin.patch"
+    #MGSOURCE="/home/devuser/workspace/MG4GPU/Test_Aug_Week1/${MG}"
+	#PATCHSOURCE="/srv/work/fix_gpu_plugin.patch"
 	#PATCHSOURCE="/afs/cern.ch/work/c/choij/public/mg4gpu/fix_gpu_plugin.patch"
     
     MGBASEDIRORIG="madgraph4gpu/MG5aMC/mg5amcnlo/"
@@ -173,7 +174,7 @@ make_gridpack () {
       cd ${name}_gridpack ; mkdir -p work ; cd work
       WORKDIR=`pwd`
       eval `scram runtime -sh`
-	  export CUDA_HOME="/cvmfs/cms.cern.ch/el8_amd64_gcc11/external/cuda/11.8.0-9f0af0f4206be7b705fe550319c49a11"
+	  #export CUDA_HOME="/cvmfs/cms.cern.ch/el8_amd64_gcc11/external/cuda/11.8.0-9f0af0f4206be7b705fe550319c49a11"
 	  export MADGRAPH_CUDA_ARCHITECTURE=80
 
       if [[ $queue == *"condor"* ]]; then
@@ -185,9 +186,9 @@ make_gridpack () {
       #Copy, Unzip and Delete the MadGraph tarball#
       #############################################
 	  echo "Preparing mg4gpu directory from ${MGSOURCE}"
-	  #pigz -d -c ${MGSOURCE} | tar -x
-	  tar -xf ${MGSOURCE}
-      cp ${PATCHSOURCE} madgraph4gpu/ && git -C madgraph4gpu apply fix_gpu_plugin.patch
+	  pigz -d -c ${MGSOURCE} | tar -x
+	  #tar -xf ${MGSOURCE}
+      #cp ${PATCHSOURCE} madgraph4gpu/ && git -C madgraph4gpu apply fix_gpu_plugin.patch
     
       #############################################
       #Apply any necessary patches on top of official release
@@ -723,9 +724,11 @@ else
     if [[ $SYSTEM_RELEASE == *"release 7"* ]]; then 
         scram_arch=slc7_amd64_gcc10 
     elif [[ $SYSTEM_RELEASE == *"release 8"* ]]; then
-        scram_arch=el8_amd64_gcc11
+        #scram_arch=el8_amd64_gcc11
+        scram_arch=el8_amd64_gcc12
     elif [[ $SYSTEM_RELEASE == *"release 9"* ]]; then
-        scram_arch=el9_amd64_gcc11
+        #scram_arch=el9_amd64_gcc11
+        scram_arch=el8_amd64_gcc12
     else 
         echo "No default scram_arch for current OS!"
         if [ "${BASH_SOURCE[0]}" != "${0}" ]; then return 1; else exit 1; fi        
@@ -739,9 +742,11 @@ else
     if [[ $SYSTEM_RELEASE == *"release 7"* ]]; then 
         cmssw_version=CMSSW_12_4_8
     elif [[ $SYSTEM_RELEASE == *"release 8"* ]]; then
-        cmssw_version=CMSSW_13_2_9
+        #cmssw_version=CMSSW_13_2_9
+        cmssw_version=CMSSW_14_0_9
     elif [[ $SYSTEM_RELEASE == *"release 9"* ]]; then
-	cmssw_version=CMSSW_13_2_9
+	    #cmssw_version=CMSSW_13_2_9
+        cmssw_version=CMSSW_14_0_9
     else 
         echo "No default CMSSW for current OS!"
         if [ "${BASH_SOURCE[0]}" != "${0}" ]; then return 1; else exit 1; fi        

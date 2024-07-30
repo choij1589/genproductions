@@ -1,0 +1,13 @@
+import model sm-no_b_mass
+# set nb_core 10	# max core in lxplus8 node
+
+define p = u d c s b u~ d~ c~ s~ b~ g
+define j = p
+define ell+ = e+ mu+ ta+
+define ell- = e- mu- ta-
+define nu = ve vm vt
+define nubar = ve~ vm~ vt~
+
+generate p p > ell+ ell- @0
+
+output madevent_gpu DY0j_LO_5f_CUDA -nojpeg
