@@ -174,8 +174,8 @@ make_gridpack () {
       cd ${name}_gridpack ; mkdir -p work ; cd work
       WORKDIR=`pwd`
       eval `scram runtime -sh`
-	  #export CUDA_HOME="/cvmfs/cms.cern.ch/el8_amd64_gcc11/external/cuda/11.8.0-9f0af0f4206be7b705fe550319c49a11"
-	  export MADGRAPH_CUDA_ARCHITECTURE=60
+      #export CUDA_HOME="/cvmfs/cms.cern.ch/el8_amd64_gcc11/external/cuda/11.8.0-9f0af0f4206be7b705fe550319c49a11"
+      #export MADGRAPH_CUDA_ARCHITECTURE=60
 
       if [[ $queue == *"condor"* ]]; then
         echo "Use HTCondor for gridpack generation"
