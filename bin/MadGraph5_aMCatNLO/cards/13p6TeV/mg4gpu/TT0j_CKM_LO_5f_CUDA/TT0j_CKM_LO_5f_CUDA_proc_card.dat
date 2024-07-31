@@ -1,0 +1,6 @@
+import model sm-ckm_no_b_mass
+
+generate p p > t t~ @0
+
+output madevent_gpu TT0j_CKM_LO_5f_CUDA -nojpeg
+
