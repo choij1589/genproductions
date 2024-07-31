@@ -137,9 +137,9 @@ make_gridpack () {
     
     MG_EXT=".tar.gz"
     MG="mg4gpu_2024-07-30${MG_EXT}"
-    #MGSOURCE="/srv/work/${MG}"
+    MGSOURCE="/srv/work/${MG}"
 	#MGSOURCE="/eos/user/c/choij/public/Archive/madgraph4gpu/${MG}"
-    MGSOURCE="/home/devuser/workspace/MG4GPU/Test_Aug_Week1/${MG}"
+    #MGSOURCE="/home/devuser/workspace/MG4GPU/Test_Aug_Week1/${MG}"
 	#PATCHSOURCE="/srv/work/fix_gpu_plugin.patch"
 	#PATCHSOURCE="/afs/cern.ch/work/c/choij/public/mg4gpu/fix_gpu_plugin.patch"
     
