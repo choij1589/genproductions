@@ -3,4 +3,5 @@ set param_card mass 6 172.5
 set param_card mass 25 125.0
 set param_card yukawa 6 172.5
 set sde_strategy 1
-set cudacpp_backend CPP
+set cudacpp_backend cppauto
+set vector_size 16384
