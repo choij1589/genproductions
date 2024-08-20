@@ -189,7 +189,7 @@ make_gridpack () {
       # If $name is TT3j*CUDA or TT0123j*CUDA, change input/.mg5_confiugration_default.txt line with nb_core
       if [[ $name == TT3j*CUDA ]] || [[ $name == TT0123j*CUDA ]]; then
         echo "Changing nb_core in inputs/.mg5_configuration_default.txt"
-        sed -i "s/# nb_core = None/nb_core = 12/g" ${MGBASEDIRORIG}input/.mg5_configuration_default.txt
+        sed -i "s/# nb_core = None/nb_core = 8/g" ${MGBASEDIRORIG}input/.mg5_configuration_default.txt
       fi
     
       #############################################
