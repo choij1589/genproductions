@@ -1,9 +1,0 @@
-Starting job on  Mon Aug 19 14:50:54 CEST 2024
-Running on  Linux 32a45e521e5c 6.10.4-200.fc40.x86_64 #1 SMP PREEMPT_DYNAMIC Sun Aug 11 15:32:50 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux
-System release  AlmaLinux release 8.10 (Cerulean Leopard)
-name: cards/13p6TeV/mg4gpu/TT2j_CKM_LO_5f_CUDA/TT2j_CKM_LO_5f_CUDA_proc_card.dat
-carddir: 
-queue: local
-scram_arch: el8_amd64_gcc12
-cmssw_version: CMSSW_14_0_9
-/home/devuser/workspace/MG4GPU/Test_AUG_Week4/genproductions/bin/MadGraph5_aMCatNLO//cards/13p6TeV/mg4gpu/TT2j_CKM_LO_5f_CUDA/TT2j_CKM_LO_5f_CUDA_proc_card.dat_proc_card.dat  does not exist!

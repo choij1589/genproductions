@@ -138,7 +138,7 @@ make_gridpack () {
     MG_EXT=".tar.gz"
     MG="mg4gpu_2024-08-19${MG_EXT}"
     MGSOURCE="/srv/work/${MG}"
-	#MGSOURCE="/eos/user/c/choij/public/Archive/madgraph4gpu/${MG}"
+    #MGSOURCE="/eos/user/c/choij/public/Archive/madgraph4gpu/${MG}"
     #MGSOURCE="/home/devuser/workspace/MG4GPU/Test_AUG_Week4/${MG}"
     
     MGBASEDIRORIG="madgraph4gpu/MG5aMC/mg5amcnlo/"
@@ -186,11 +186,6 @@ make_gridpack () {
 	  echo "Preparing mg4gpu directory from ${MGSOURCE}"
 	  #pigz -d -c ${MGSOURCE} | tar -x
 	  tar -xf ${MGSOURCE}
-      # If $name is TT3j*CUDA or TT0123j*CUDA, change input/.mg5_confiugration_default.txt line with nb_core
-      if [[ $name == TT3j*CUDA ]] || [[ $name == TT0123j*CUDA ]]; then
-        echo "Changing nb_core in inputs/.mg5_configuration_default.txt"
-        sed -i "s/# nb_core = None/nb_core = 6/g" ${MGBASEDIRORIG}input/.mg5_configuration_default.txt
-      fi
     
       #############################################
       #Apply any necessary patches on top of official release
