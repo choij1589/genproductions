@@ -1,0 +1,12 @@
+import model sm-no_b_mass
+
+define p = u u~ g
+define j = p
+define ell+ = e+ 
+define ell- = e- 
+define nu = ve vm vt
+define nubar = ve~ vm~ vt~
+
+generate p p > ell+ ell- j j j j @0
+
+output madevent_gpu DY4j_LO_5f_Simplified_FORTRAN -nojpeg

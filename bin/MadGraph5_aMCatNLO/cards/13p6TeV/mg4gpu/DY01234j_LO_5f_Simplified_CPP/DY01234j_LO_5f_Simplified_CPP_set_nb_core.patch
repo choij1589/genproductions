@@ -1,0 +1,13 @@
+diff --git a/input/.mg5_configuration_default.txt b/input/.mg5_configuration_default.txt
+index 1125657de..03c52bcf6 100644
+--- a/input/.mg5_configuration_default.txt
++++ b/input/.mg5_configuration_default.txt
+@@ -140,7 +140,7 @@
+ 
+ #! Nb_core to use (None = all) This is use only for multicore run
+ #!  This correspond also to the number core used for code compilation for cluster mode
+-# nb_core = None
++nb_core = 80
+ 
+ #! Pythia-PGS Package
+ #!  relative path start from main directory
