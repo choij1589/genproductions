@@ -136,10 +136,10 @@ make_gridpack () {
     MGBASEDIR=mgbasedir
     
     MG_EXT=".tar.gz"
-    MG="mg4gpu_2024-08-19${MG_EXT}"
+    MG="mg4gpu_2024-09-16${MG_EXT}"
     MGSOURCE="/srv/work/${MG}"
     #MGSOURCE="/eos/user/c/choij/public/Archive/madgraph4gpu/${MG}"
-    #MGSOURCE="/home/devuser/workspace/MG4GPU/Test_AUG_Week4/${MG}"
+    #MGSOURCE="/home/cmsusr/workspace/MG4GPU/Test_SEP_Week3/${MG}"
     
     MGBASEDIRORIG="madgraph4gpu/MG5aMC/mg5amcnlo/"
     isscratchspace=0
@@ -172,8 +172,6 @@ make_gridpack () {
       cd ${name}_gridpack ; mkdir -p work ; cd work
       WORKDIR=`pwd`
       eval `scram runtime -sh`
-      #export CUDA_HOME="/cvmfs/cms.cern.ch/el8_amd64_gcc11/external/cuda/11.8.0-9f0af0f4206be7b705fe550319c49a11"
-      #export MADGRAPH_CUDA_ARCHITECTURE=60
 
       if [[ $queue == *"condor"* ]]; then
         echo "Use HTCondor for gridpack generation"
