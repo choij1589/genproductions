@@ -1,5 +1,6 @@
 #!/bin/env python3
 import os
+import warnings
 import sys
 import re
 import argparse
@@ -11,9 +12,6 @@ import glob
 import json
 import ast
 from datetime import datetime
-#
-#sys.path.append('/afs/cern.ch/cms/PPD/PdmV/tools/McM-QA/')
-#from rest import McM
 from json import dumps
 
 parser = argparse.ArgumentParser(
@@ -56,8 +54,31 @@ if args.develop is False:
 	
 # Use no-id as identification mode in order not to use a SSO cookie
 if args.local is False:
-    sys.path.append('/afs/cern.ch/cms/PPD/PdmV/tools/McM-QA/')
-    from rest import McM
+    try:
+        from rest import McM
+    except ModuleNotFoundError as e:
+        old_version_afs = '/afs/cern.ch/cms/PPD/PdmV/tools/McM'
+        try:
+            # INFO: Temporarily load the old version to avoid crashes with non-updated user code.
+            sys.path.append(old_version_afs)
+            from rest import McM
+
+            version_msg = (
+                "An old version of the McM module has been loaded from: %s. " 
+                "This is a temporal patch to avoid unforeseen import errors with user's code. "
+                "Install a recent version following the instructions available at "
+                "https://github.com/cms-PdmV/mcm_scripts for future executions."
+            ) % (old_version_afs)
+            warnings.warn(version_msg, DeprecationWarning)
+
+        except ModuleNotFoundError as e:
+            import_msg = (
+                "Install this module in your execution environment "
+                "by following the instructions available at: "
+                "https://github.com/cms-PdmV/mcm_scripts"
+            )
+            raise ModuleNotFoundError(import_msg) from e
+
     mcm = McM(id=None, dev=args.dev, debug=args.debug)
     mcm_link = mcm.server
 
@@ -77,15 +98,6 @@ def get_request(prepid):
 
     result = result.get('results', {})
     return result
-
-#def get_request(prepid):
-#    result = mcm._McM__get('public/restapi/requests/get/%s' % (prepid))
-#    if not result:
-#        return {}
-#
-#    result = result.get('results', {})
-#    return result
-
 
 def get_range_of_requests(query):
     result = mcm._McM__put('public/restapi/requests/listwithfile', data={'contents': query})
@@ -210,7 +222,8 @@ def concurrency_check(fragment,pi,cmssw_version,mg_gp):
                 print("For MG5_aMC requests, currently the concurrent mode for LHE production is not supported due to heavy I/O.")
             # for other cases, it is either concurrent generation parameters are missing or wrong        
             else:
-                error_conc.append("Concurrent generation parameters missing or wrong. Please see https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookGenMultithread")
+                if "CloseByParticleGun" not in dn:		    
+                    error_conc.append("Concurrent generation parameters missing or wrong. Please see https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookGenMultithread")
                     
     else:
         if "concurrent" in fragment.lower():
@@ -779,11 +792,13 @@ for num in range(0,len(prepid)):
             else:
                 warnings.append("scram_arch for Sherpa unidentifiable")
             sv_tmp = re.findall("sherpa/.*/",gridpack_cvmfs_path_tmp)[0].split("/")[1].split(".")
-            if "v" in sv_tmp[0].lower(): sv_tmp[0] = sv_tmp[0].replace("v","").replace("V","")
-            sherpa_version = int(sv_tmp[0])*1000 + int(sv_tmp[1])*100 + int(sv_tmp[2])
-            print ("Sherpa Version = ", sherpa_version)
+            sherpa_version = 0000
+            if "v" in sv_tmp[0].lower(): 
+                sv_tmp[0] = sv_tmp[0].replace("v","").replace("V","")
+                sherpa_version = int(sv_tmp[0])*1000 + int(sv_tmp[1])*100 + int(sv_tmp[2])
+                print ("Sherpa Version = ", sherpa_version)
             if sherpa_version < 2211:
-                warnings.append("Sherpa older than version 2.2.11")
+                warnings.append("Sherpa older than version 2.2.11 or not specified in gp name")
         if "openloops" in gridpack_cvmfs_path_tmp.lower():
             openloops_flag = True
             OL_list = os.popen('grep openloops '+pi_file).read().split("/")
