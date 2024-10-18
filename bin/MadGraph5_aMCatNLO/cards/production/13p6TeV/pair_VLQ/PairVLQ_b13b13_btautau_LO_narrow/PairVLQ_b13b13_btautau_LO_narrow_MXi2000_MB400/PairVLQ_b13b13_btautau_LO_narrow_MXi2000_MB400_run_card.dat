@@ -23,13 +23,13 @@
 #*********************************************************************
 # Run to generate the grid pack                                      *
 #*********************************************************************
-  .true.     = gridpack  !True = setting up the grid pack
+  .false.     = gridpack  !True = setting up the grid pack
 #*********************************************************************
 # Number of events and rnd seed                                      *
 # Warning: Do not generate more than 1M events in a single run       *
 # If you want to run Pythia, avoid more than 50k events in a run.    *
 #*********************************************************************
-  2500 = nevents ! Number of unweighted events requested 
+  250 = nevents ! Number of unweighted events requested 
       0       = iseed   ! rnd seed (0=assigned automatically=default))
 #*********************************************************************
 # Collider type and energy                                           *
@@ -49,8 +49,7 @@
 # PDF CHOICE: this automatically fixes also alpha_s and its evol.    *
 #*********************************************************************
  'lhapdf'    = pdlabel     ! PDF set                                  
- $DEFAULT_PDF_SETS    = lhaid    
- $DEFAULT_PDF_MEMBERS    = reweight_PDF  ! if pdlabel=lhapdf, this is the lhapdf number 
+ $DEFAULT_PDF_SETS = lhaid     ! if pdlabel=lhapdf, this is the lhapdf number 
 #*********************************************************************
 # Renormalization and factorization scales                           *
 #*********************************************************************
@@ -63,13 +62,13 @@
 #*********************************************************************
 # Matching - Warning! ickkw > 1 is still beta
 #*********************************************************************
- 0        = ickkw            ! 0 no matching, 1 MLM, 2 CKKW matching   
+ 0        = ickkw            ! 0 no matching, 1 MLM, 2 CKKW matching
  1        = highestmult      ! for ickkw=2, highest mult group
  1        = ktscheme         ! for ickkw=1, 1 Durham kT, 2 Pythia pTE
  1        = alpsfact         ! scale factor for QCD emission vx
  F        = chcluster        ! cluster only according to channel diag
  F        = pdfwgt           ! for ickkw=1, perform pdf reweighting
- 4        = asrwgtflavor     ! highest quark flavor for a_s reweight   
+ 5        = asrwgtflavor     ! highest quark flavor for a_s reweight
  T        = clusinfo         ! include clustering tag in output
  3.0      = lhe_version       ! Change the way clustering information pass to shower.        
 #*********************************************************************
@@ -85,7 +84,7 @@
 #**********************************
 # BW cutoff (M+/-bwcutoff*Gamma)
 #**********************************
-  15.0  = bwcutoff      ! (M+/-bwcutoff*Gamma) 
+  15  = bwcutoff      ! (M+/-bwcutoff*Gamma)
 #**********************************************************
 # Apply pt/E/eta/dr/mij cuts on decay products or not
 # (note that etmiss/ptll/ptheavy/ht/sorted cuts always apply)
@@ -111,6 +110,7 @@
   0  = ptl       ! minimum pt for the charged leptons 
   0  = misset    ! minimum missing Et (sum of neutrino's momenta)
   0  = ptheavy   ! minimum pt for one heavy final state
+  0  = ptonium   ! minimum pt for the quarkonium states
  -1  = ptjmax    ! maximum pt for the jets
  -1  = ptbmax    ! maximum pt for the b
  -1  = ptamax    ! maximum pt for the photons
@@ -134,6 +134,7 @@
   -1  = etab    ! max rap for the b
   -1  = etaa    ! max rap for the photons 
   -1  = etal    ! max rap for the charged leptons 
+  -1  = etaonium ! max rap for the quarkonium states
    0  = etajmin ! min rap for the jets
    0  = etabmin ! min rap for the b
    0  = etaamin ! min rap for the photons
@@ -232,11 +233,11 @@
 # When ptgmin=0, all the other parameters are ignored                  *
 # When ptgmin>0, pta and draj are not going to be used                 *
 #***********************************************************************
- 0 = ptgmin ! Min photon transverse momentum
+   0 = ptgmin ! Min photon transverse momentum
  0.4 = R0gamma ! Radius of isolation code
  1.0 = xn ! n parameter of eq.(3.4) in hep-ph/9801442
  1.0 = epsgamma ! epsilon_gamma parameter of eq.(3.4) in hep-ph/9801442
-.true. = isoEM ! isolate photons from EM energy (photons and leptons)
+ .true. = isoEM ! isolate photons from EM energy (photons and leptons)
 #*********************************************************************
 # WBF cuts                                                           *
 #*********************************************************************
@@ -251,11 +252,11 @@
 # maximal pdg code for quark to be considered as a light jet         *
 # (otherwise b cuts are applied)                                     *
 #*********************************************************************
-4 = maxjetflavor    ! Maximum jet pdg code                              
+ 4 = maxjetflavor    ! Maximum jet pdg code
 #*********************************************************************
 # Jet measure cuts                                                   *
 #*********************************************************************
-0   = xqcut   ! minimum kt jet measure between partons
+ 0   = xqcut   ! minimum kt jet measure between partons
 #*********************************************************************
 #
 #*********************************************************************
