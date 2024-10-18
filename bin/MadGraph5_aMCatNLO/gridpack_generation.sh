@@ -136,10 +136,10 @@ make_gridpack () {
     MGBASEDIR=mgbasedir
     
     MG_EXT=".tar.gz"
-    MG="mg4gpu_2024-08-19${MG_EXT}"
-    MGSOURCE="/srv/work/${MG}"
+    MG="mg4gpu_2024-10-18${MG_EXT}"
+    #MGSOURCE="/srv/work/${MG}"
     #MGSOURCE="/eos/user/c/choij/public/Archive/madgraph4gpu/${MG}"
-    #MGSOURCE="/home/devuser/workspace/MG4GPU/Test_AUG_Week4/${MG}"
+    MGSOURCE="/home/cmsusr/workspace/cms-madgraph4gpu-integration/epoch1/tarballs/${MG}"
     
     MGBASEDIRORIG="madgraph4gpu/MG5aMC/mg5amcnlo/"
     isscratchspace=0
@@ -338,10 +338,10 @@ make_gridpack () {
 	  fi
       fi
       if [  "$runMadSTR" == 0 ]; then 
-	  ./$MGBASEDIRORIG/bin/mg5_aMC ${name}_proc_card.dat # normal run without plugin 
+	  PYTHONPATH=$MGBASEDIRORIG/.. ./$MGBASEDIRORIG/bin/mg5_aMC -m CUDACPP_OUTPUT ${name}_proc_card.dat # normal run without plugin 
       else
-	  echo "Invoke MadSTR plugin when starting MG5_aMC@NLO" 
-	  cp -r $PRODHOME/PLUGIN/MadSTR $MGBASEDIRORIG/PLUGIN/ # copy plugin 
+	      echo "Invoke MadSTR plugin when starting MG5_aMC@NLO" 
+	      cp -r $PRODHOME/PLUGIN/MadSTR $MGBASEDIRORIG/PLUGIN/ # copy plugin 
           ./$MGBASEDIRORIG/bin/mg5_aMC --mode=MadSTR ${name}_proc_card.dat # run invoking MadSTR plugin
       fi
 	
