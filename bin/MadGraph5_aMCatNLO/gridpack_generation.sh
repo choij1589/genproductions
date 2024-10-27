@@ -136,11 +136,12 @@ make_gridpack () {
     MGBASEDIR=mgbasedir
     
     MG_EXT=".tar.gz"
-    MG="mg4gpu_2024-10-18${MG_EXT}"
+    MG="mg4gpu_2024-10-27${MG_EXT}"
     #MGSOURCE="/srv/work/${MG}"
     #MGSOURCE="/eos/user/c/choij/public/Archive/madgraph4gpu/${MG}"
-    MGSOURCE="/home/cmsusr/workspace/cms-madgraph4gpu-integration/epoch1/tarballs/${MG}"
-    
+    #MGSOURCE="/home/cmsusr/workspace/cms-madgraph4gpu-integration/epoch1/tarballs/${MG}"
+    MGSOURCE="/pscratch/sd/c/choij/workspace/cms-madgraph4gpu-integration/epoch1/${MG}" 
+
     MGBASEDIRORIG="madgraph4gpu/MG5aMC/mg5amcnlo/"
     isscratchspace=0
     
