@@ -136,10 +136,10 @@ make_gridpack () {
     MGBASEDIR=mgbasedir
     
     MG_EXT=".tar.gz"
-    MG=MG5_aMC_v3.5.6$MG_EXT
-    MGSOURCE=https://launchpad.net/mg5amcnlo/3.0/3.6.x/+download/$MG
-
-    MGBASEDIRORIG=$(echo ${MG%$MG_EXT} | tr "." "_")
+    MG="mg4gpu_2024-10-27${MG_EXT}"
+    MGSOURCE="/pscratch/sd/c/choij/workspace/cms-madgraph4gpu-integration/epoch1/${MG}"
+    
+    MGBASEDIRORIG="madgraph4gpu/MG5aMC/mg5amcnlo/"
     isscratchspace=0
     
     if [ ! -d ${GEN_FOLDER}/${name}_gridpack ]; then
@@ -179,9 +179,16 @@ make_gridpack () {
       #############################################
       #Copy, Unzip and Delete the MadGraph tarball#
       #############################################
-      wget --no-check-certificate ${MGSOURCE}
-      tar xzf ${MG}
-      rm "$MG"
+      #wget --no-check-certificate ${MGSOURCE}
+      #tar xzf ${MG}
+      #rm "$MG"
+      #cd $WORKDIR
+      #git clone --recurse-submodules git@github.com:madgraph5/madgraph4gpu.git
+      #cd $WORKDIR/madgraph4gpu
+      #git checkout cudacpp_for3.6.0_v1.00.00
+      #git submodule update
+      echo "Preparing mg4gpu directory from ${MGSOURCE}"
+      pigz -d -c ${MGSOURCE} | tar -x
     
       #############################################
       #Apply any necessary patches on top of official release
@@ -338,23 +345,31 @@ make_gridpack () {
       ########################
     
       sed -i '$ a display multiparticles' ${name}_proc_card.dat
-
       #check if MadSTR plugin is needed (DR/DS removal,  https://arxiv.org/pdf/1907.04898.pdf)
       runMadSTR=`grep "istr" $CARDSDIR/${name}_run_card.dat | grep -v "#" |  cut -d  "="  -f 1`
+      # Check if CUDACPP_OUTPUT module is needed based on backend (SIMD or GPU)
+      runSIMD=`grep -E "madevent_simd|madevent_gpu" $CARDSDIR/${name}_proc_card.dat`
+      echo runSIMD = $runSIMD
+
       if [ -z ${runMadSTR} ] ; then
-          runMadSTR=0 # plugin settings not found in run_card
+          runMadSTR="" # plugin settings not found in run_card
       else
           if [ "${runMadSTR}" -lt 1 ] || [ "${runMadSTR}" -gt 6 ] ; then
               echo "istr should be between 1 and 6" # wrong settings 
               exit 1
-	  fi
+	      fi
       fi
-      if [  "$runMadSTR" == 0 ]; then 
-	  ./$MGBASEDIRORIG/bin/mg5_aMC ${name}_proc_card.dat # normal run without plugin 
+  
+      if [  "$runMadSTR" != "" ]; then
+          echo "Invoke MadSTR plugin when starting MG5_aMC@NLO"
+          cp -r $PRODHOME/PLUGIN/MadSTR $MGBASEDIRORIG/PLUGIN/ # copy plugin
+          ./$MGBASEDIRORIG/bin/mg5_aMC --mode=MadSTR ${name}_proc_card.dat
+      elif [  "$runSIMD" != "" ]; then
+          echo "Running with SIMD backend and enabling CUDACPP_OUTPUT module"
+          PYTHONPATH=$MGBASEDIRORIG/.. ./$MGBASEDIRORIG/bin/mg5_aMC ${name}_proc_card.dat -m CUDACPP_OUTPUT
       else
-	  echo "Invoke MadSTR plugin when starting MG5_aMC@NLO" 
-	  cp -r $PRODHOME/PLUGIN/MadSTR $MGBASEDIRORIG/PLUGIN/ # copy plugin 
-          ./$MGBASEDIRORIG/bin/mg5_aMC --mode=MadSTR ${name}_proc_card.dat # run invoking MadSTR plugin
+          echo "Default run mode"
+          ./$MGBASEDIRORIG/bin/mg5_aMC ${name}_proc_card.dat
       fi
 	
       is5FlavorScheme=0
@@ -730,9 +745,9 @@ else
     if [[ $SYSTEM_RELEASE == *"release 7"* ]]; then 
         scram_arch=slc7_amd64_gcc10 
     elif [[ $SYSTEM_RELEASE == *"release 8"* ]]; then
-        scram_arch=el8_amd64_gcc10
+        scram_arch=el8_amd64_gcc12
     elif [[ $SYSTEM_RELEASE == *"release 9"* ]]; then
-        scram_arch=el9_amd64_gcc11
+        scram_arch=el9_amd64_gcc12
     else 
         echo "No default scram_arch for current OS!"
         if [ "${BASH_SOURCE[0]}" != "${0}" ]; then return 1; else exit 1; fi        
@@ -746,9 +761,11 @@ else
     if [[ $SYSTEM_RELEASE == *"release 7"* ]]; then 
         cmssw_version=CMSSW_12_4_8
     elif [[ $SYSTEM_RELEASE == *"release 8"* ]]; then
-        cmssw_version=CMSSW_12_4_8
+        #cmssw_version=CMSSW_12_4_8
+        cmssw_version=CMSSW_14_0_9
     elif [[ $SYSTEM_RELEASE == *"release 9"* ]]; then
-	cmssw_version=CMSSW_13_2_9
+	    #cmssw_version=CMSSW_13_2_9
+        cmssw_version=CMSSW_14_0_9
     else 
         echo "No default CMSSW for current OS!"
         if [ "${BASH_SOURCE[0]}" != "${0}" ]; then return 1; else exit 1; fi        
