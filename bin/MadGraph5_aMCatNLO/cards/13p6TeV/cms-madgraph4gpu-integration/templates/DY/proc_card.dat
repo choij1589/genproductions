@@ -1,0 +1,3 @@
+[GENERATE_COMMAND]
+
+output madevent_simd [PROCESS_NAME] --hel_recycling=False --vector_size=32 -nojpeg

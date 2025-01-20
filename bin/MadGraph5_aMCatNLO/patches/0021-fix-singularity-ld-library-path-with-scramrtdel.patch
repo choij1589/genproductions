@@ -1,3 +1,5 @@
+diff --git a/Template/LO/SubProcesses/refine.sh b/Template/LO/SubProcesses/refine.sh
+index b46170ba2..356c79c1a 100644
 --- a/Template/LO/SubProcesses/refine.sh
 +++ b/Template/LO/SubProcesses/refine.sh
 @@ -5,6 +5,22 @@ if [ $CLUSTER_LHAPATH ]; then
@@ -23,26 +25,30 @@
  if [[ -e MadLoop5_resources.tar.gz && ! -e MadLoop5_resources ]]; then
  tar -xzf MadLoop5_resources.tar.gz
  fi
-@@ -82,7 +98,11 @@ j=%(directory)s
+@@ -90,7 +106,11 @@ j=%(directory)s
       if [[ $status_code -ne 0 ]]; then 
  	 rm results.dat
  	 echo "ERROR DETECTED"
 -	 echo "end-code not correct $status_code" > results.dat
-+   echo "end-code not correct $status_code" >> log.txt
-+   echo "+ Hostname:" >> log.txt
-+   hostname >> log.txt
-+   echo "+ Printing job environment:" >> log.txt
-+   env >> log.txt
++     echo "end-code not correct $status_code" >> log.txt
++     echo "+ Hostname:" >> log.txt
++     hostname >> log.txt
++     echo "+ Printing job environment:" >> log.txt
++     env >> log.txt
       fi     
       if [[ -e ftn26 ]]; then
           cp ftn26 ftn25
-@@ -100,3 +120,6 @@ j=%(directory)s
+@@ -107,4 +127,7 @@ j=%(directory)s
+ 
  
       cd ../
- 
-+if [[ $status_code -ne 0 ]]; then
-+  exit $status_code
-+fi
+-
++     
++     if [[ $status_code -ne 0 ]]; then
++     exit $status_code
++     fi
+diff --git a/Template/LO/SubProcesses/refine_splitted.sh b/Template/LO/SubProcesses/refine_splitted.sh
+index 10fe14f7c..b42b32b89 100644
 --- a/Template/LO/SubProcesses/refine_splitted.sh
 +++ b/Template/LO/SubProcesses/refine_splitted.sh
 @@ -4,6 +4,23 @@
@@ -69,16 +75,18 @@
  if [[ -e MadLoop5_resources.tar.gz && ! -e MadLoop5_resources ]]; then
  tar -xzf MadLoop5_resources.tar.gz
  fi
-@@ -73,7 +90,15 @@ fi
+@@ -72,8 +89,16 @@ if [[ $subdir -ne 1 &&  -s results.dat && $MG5DEBUG != true ]]; then
+ fi
  if [[ $status_code -ne 0 ]]; then 
  	 rm results.dat
- 	 echo "ERROR DETECTED"
+-	 echo "ERROR DETECTED"
 -	 echo "end code not correct $status_code" > results.dat
-+   echo "end-code not correct $status_code" >> log.txt
-+   echo "+ Hostname:" >> log.txt
-+   hostname >> log.txt
-+   echo "+ Printing job environment:" >> log.txt
-+   env >> log.txt
++     echo "ERROR DETECTED"
++     echo "end-code not correct $status_code" >> log.txt
++     echo "+ Hostname:" >> log.txt
++     hostname >> log.txt
++     echo "+ Printing job environment:" >> log.txt
++     env >> log.txt
  fi
  
 -cd ../
@@ -88,7 +96,8 @@
 +if [[ $status_code -ne 0 ]]; then
 +   exit $status_code
 +fi
-\ No newline at end of file
+diff --git a/Template/LO/SubProcesses/survey.sh b/Template/LO/SubProcesses/survey.sh
+index 843312717..f3f7fc9f9 100755
 --- a/Template/LO/SubProcesses/survey.sh
 +++ b/Template/LO/SubProcesses/survey.sh
 @@ -5,6 +5,22 @@ if [ $CLUSTER_LHAPATH ]; then
@@ -119,16 +128,18 @@
  	 rm results.dat
  	 echo "ERROR DETECTED"
 -	 echo "end code not correct $status_code" > results.dat
-+	 echo "end code not correct $status_code" >> log.txt
-+   echo "+ Hostname:" >> log.txt
-+   hostname >> log.txt
-+   echo "+ Printing job environment:" >> log.txt
-+   env >> log.txt
-+   cd ../
-+   exit $status_code
++     echo "end code not correct $status_code" >> log.txt
++     echo "+ Hostname:" >> log.txt
++     hostname >> log.txt
++     echo "+ Printing job environment:" >> log.txt
++     env >> log.txt
++     cd ../
++     exit $status_code
       fi
       cd ../;
  
+diff --git a/Template/NLO/SubProcesses/ajob_template b/Template/NLO/SubProcesses/ajob_template
+index 437d2d446..703503e89 100755
 --- a/Template/NLO/SubProcesses/ajob_template
 +++ b/Template/NLO/SubProcesses/ajob_template
 @@ -12,6 +12,22 @@ if [ $CLUSTER_LHAPATH ]; then
@@ -154,7 +165,7 @@
  tarCounter=0
  while [[ (-f MadLoop5_resources.tar.gz) && (! -f MadLoop5_resources/HelConfigs.dat) && ($tarCounter < 10) ]]; do
      if [[ $tarCounter > 0 ]]; then
-@@ -97,6 +113,13 @@ TAGTAGTAGTAGTAGTAGTAG for i in 1 ; do
+@@ -101,6 +117,13 @@ TAGTAGTAGTAGTAGTAGTAG for i in 1 ; do
          ../madevent_mintMC > log.txt <input_app.txt 2>&1
      fi
      status=$?
@@ -168,6 +179,8 @@
      T="$(($(date +%s)-T))"
      echo "Time in seconds: ${T}" >>log.txt
      cp -f log.txt log_MINT$integration_step.txt  >/dev/null 2>&1
+diff --git a/Template/NLO/SubProcesses/reweight_xsec_events.local b/Template/NLO/SubProcesses/reweight_xsec_events.local
+index 2bd57196a..396d5d7d8 100644
 --- a/Template/NLO/SubProcesses/reweight_xsec_events.local
 +++ b/Template/NLO/SubProcesses/reweight_xsec_events.local
 @@ -8,6 +8,22 @@ if [ $CLUSTER_LHAPATH ]; then

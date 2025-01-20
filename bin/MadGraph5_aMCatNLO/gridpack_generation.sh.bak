@@ -136,10 +136,10 @@ make_gridpack () {
     MGBASEDIR=mgbasedir
     
     MG_EXT=".tar.gz"
-    MG="mg4gpu_2025-01-20${MG_EXT}"
-    MGSOURCE="/pscratch/sd/c/choij/workspace/cms-madgraph4gpu-integration/epoch1/tarballs/${MG}"
+    MG=MG5_aMC_v2.9.18$MG_EXT
+    MGSOURCE=https://cms-project-generators.web.cern.ch/cms-project-generators/$MG
     
-    MGBASEDIRORIG="madgraph4gpu/MG5aMC/mg5amcnlo/"
+    MGBASEDIRORIG=$(echo ${MG%$MG_EXT} | tr "." "_")
     isscratchspace=0
     
     if [ ! -d ${GEN_FOLDER}/${name}_gridpack ]; then
@@ -179,9 +179,9 @@ make_gridpack () {
       #############################################
       #Copy, Unzip and Delete the MadGraph tarball#
       #############################################
-      echo "Preparing mg4gpu directory from ${MGSOURCE}"
-      tar xzf ${MGSOURCE}
-      #pigz -d -c ${MGSOURCE} | tar -x
+      wget --no-check-certificate ${MGSOURCE}
+      tar xzf ${MG}
+      rm "$MG"
     
       #############################################
       #Apply any necessary patches on top of official release
@@ -190,11 +190,6 @@ make_gridpack () {
       cd $MGBASEDIRORIG
       cat $PRODHOME/patches/*.patch | patch -p1
       cp -r $PRODHOME/PLUGIN/CMS_CLUSTER/ PLUGIN/ 
-      # Intended for expert use only!
-      if ls $CARDSDIR/${name}*.patch; then
-        echo "    WARNING: Applying custom user patch. I hope you know what you're doing!"
-        cat $CARDSDIR/${name}*.patch | patch -p1
-      fi
 
       # Copy bias module (cp3.irmp.ucl.ac.be/projects/madgraph/wiki/LOEventGenerationBias)
       # Expected structure: 
@@ -206,32 +201,13 @@ make_gridpack () {
         echo "copying bias module folder. Current dir:"
         pwd
         ls -lrth
-        cp -r $CARDSDIR/BIAS/* $MGBASEDIRORIG/Template/LO/Source/BIAS
+        cp -r $CARDSDIR/BIAS/* Template/LO/Source/BIAS
       fi
     
       LHAPDFCONFIG=`echo "$LHAPDF_DATA_PATH/../../bin/lhapdf-config"`
     
       LHAPDFINCLUDES=`$LHAPDFCONFIG --incdir`
       LHAPDFLIBS=`$LHAPDFCONFIG --libdir`
-
-      # workaround for el8
-      LHAPDFPYTHONVER=`find $LHAPDFLIBS -name "python*" -type d -exec basename {} \;`
-      LHAPDFPYTHONLIB=`find $LHAPDFLIBS/$LHAPDFPYTHONVER/site-packages -name "*.egg" -type d -exec basename {} \;`
-      export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$LHAPDFLIBS
-
-      if [ ! -z "${LHAPDFPYTHONLIB}" ] ; then
-        if [ ! -z "${PYTHONPATH+x}" ] ; then
-          export PYTHONPATH=$PYTHONPATH:$LHAPDFLIBS/$LHAPDFPYTHONVER/site-packages/$LHAPDFPYTHONLIB
-        else
-          export PYTHONPATH=$LHAPDFLIBS/$LHAPDFPYTHONVER/site-packages/$LHAPDFPYTHONLIB
-        fi
-      else
-        if [ ! -z "${PYTHONPATH+x}" ] ; then
-          export PYTHONPATH=$PYTHONPATH:$LHAPDFLIBS/$LHAPDFPYTHONVER/site-packages
-        else
-          export PYTHONPATH=$LHAPDFLIBS/$LHAPDFPYTHONVER/site-packages
-        fi
-      fi
     
       echo "set auto_update 0" > mgconfigscript
       echo "set automatic_html_opening False" >> mgconfigscript
@@ -286,7 +262,7 @@ make_gridpack () {
           fi      
       fi
     
-      echo "save options" >> mgconfigscript
+      echo "save options --all" >> mgconfigscript
     
       ./bin/mg5_aMC mgconfigscript
     
@@ -322,6 +298,14 @@ make_gridpack () {
         set +u
         if [ "${BASH_SOURCE[0]}" != "${0}" ]; then return 0; else exit 0; fi
       fi
+
+      cd $MGBASEDIRORIG
+      # Intended for expert use only!
+      if ls $CARDSDIR/${name}*.patch; then
+        echo "    WARNING: Applying custom user patch. I hope you know what you're doing!"
+        cat $CARDSDIR/${name}*.patch | patch -p 1
+      fi
+      cd $WORKDIR
     
       echo `pwd`
 
@@ -338,32 +322,23 @@ make_gridpack () {
       ########################
     
       sed -i '$ a display multiparticles' ${name}_proc_card.dat
+
       #check if MadSTR plugin is needed (DR/DS removal,  https://arxiv.org/pdf/1907.04898.pdf)
       runMadSTR=`grep "istr" $CARDSDIR/${name}_run_card.dat | grep -v "#" |  cut -d  "="  -f 1`
-      # Check if CUDACPP_OUTPUT module is needed based on backend (SIMD or GPU)
-      runSIMD=`grep -E "madevent_simd|madevent_gpu" $CARDSDIR/${name}_proc_card.dat`
-      echo runSIMD = $runSIMD
-
       if [ -z ${runMadSTR} ] ; then
-          runMadSTR="" # plugin settings not found in run_card
+          runMadSTR=0 # plugin settings not found in run_card
       else
           if [ "${runMadSTR}" -lt 1 ] || [ "${runMadSTR}" -gt 6 ] ; then
               echo "istr should be between 1 and 6" # wrong settings 
               exit 1
-	      fi
+	  fi
       fi
-  
-      if [  "$runMadSTR" != "" ]; then
-          echo "Invoke MadSTR plugin when starting MG5_aMC@NLO"
-          cp -r $PRODHOME/PLUGIN/MadSTR $MGBASEDIRORIG/PLUGIN/ # copy plugin
-          ./$MGBASEDIRORIG/bin/mg5_aMC --mode=MadSTR ${name}_proc_card.dat
-      elif [  "$runSIMD" != "" ]; then
-          echo "Running with SIMD backend and enabling CUDACPP_OUTPUT module"
-          export CUDA_VISIBLE_DEVICES=0
-          PYTHONPATH=$MGBASEDIRORIG/.. ./$MGBASEDIRORIG/bin/mg5_aMC ${name}_proc_card.dat -m CUDACPP_OUTPUT
+      if [  "$runMadSTR" == 0 ]; then 
+	  ./$MGBASEDIRORIG/bin/mg5_aMC ${name}_proc_card.dat # normal run without plugin 
       else
-          echo "Default run mode"
-          ./$MGBASEDIRORIG/bin/mg5_aMC ${name}_proc_card.dat
+	  echo "Invoke MadSTR plugin when starting MG5_aMC@NLO" 
+	  cp -r $PRODHOME/PLUGIN/MadSTR $MGBASEDIRORIG/PLUGIN/ # copy plugin 
+          ./$MGBASEDIRORIG/bin/mg5_aMC --mode=MadSTR ${name}_proc_card.dat # run invoking MadSTR plugin
       fi
 	
       is5FlavorScheme=0
@@ -681,6 +656,9 @@ make_gridpack () {
     if [ $is5FlavorScheme -eq 1 ]; then
       pdfExtraArgs+="--is5FlavorScheme "
     fi 
+    if grep -q -e "\$DEFAULT_nPDF_SETS" $CARDSDIR/${name}_run_card.dat; then
+      pdfExtraArgs+="--ion Pb "
+    fi
     
     pdfSysArgs=$(python3 ${script_dir}/getMG5_aMC_PDFInputs.py -f systematics -c run3 $pdfExtraArgs)
     sed -i s/PDF_SETS_REPLACE/${pdfSysArgs}/g runcmsgrid.sh
@@ -739,9 +717,9 @@ else
     if [[ $SYSTEM_RELEASE == *"release 7"* ]]; then 
         scram_arch=slc7_amd64_gcc10 
     elif [[ $SYSTEM_RELEASE == *"release 8"* ]]; then
-        scram_arch=el8_amd64_gcc12
+        scram_arch=el8_amd64_gcc10
     elif [[ $SYSTEM_RELEASE == *"release 9"* ]]; then
-        scram_arch=el9_amd64_gcc12
+        scram_arch=el9_amd64_gcc11
     else 
         echo "No default scram_arch for current OS!"
         if [ "${BASH_SOURCE[0]}" != "${0}" ]; then return 1; else exit 1; fi        
@@ -755,11 +733,9 @@ else
     if [[ $SYSTEM_RELEASE == *"release 7"* ]]; then 
         cmssw_version=CMSSW_12_4_8
     elif [[ $SYSTEM_RELEASE == *"release 8"* ]]; then
-        #cmssw_version=CMSSW_12_4_8
-        cmssw_version=CMSSW_14_0_9
+        cmssw_version=CMSSW_12_4_8
     elif [[ $SYSTEM_RELEASE == *"release 9"* ]]; then
-	    #cmssw_version=CMSSW_13_2_9
-        cmssw_version=CMSSW_14_0_9
+	cmssw_version=CMSSW_13_2_9
     else 
         echo "No default CMSSW for current OS!"
         if [ "${BASH_SOURCE[0]}" != "${0}" ]; then return 1; else exit 1; fi        
