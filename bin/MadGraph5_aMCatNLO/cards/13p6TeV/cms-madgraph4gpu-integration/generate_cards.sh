@@ -34,7 +34,9 @@ mkdir -p ${PROCESS_NAME}_${BACKEND}
 
 # Determine plugin based on backend
 PLUGIN=""
-if [[ "$BACKEND" == "FORTRAN" ]]; then
+if [[ "$BACKEND" == "UPSTREAM" ]]; then
+    PLUGIN=""
+elif [[ "$BACKEND" == "FORTRAN" ]]; then
     PLUGIN="madevent"
 elif [[ "$BACKEND" == "CPP"* ]]; then
     PLUGIN="madevent_simd"
@@ -55,7 +57,8 @@ define j = p
 define ell+ = e+ mu+ ta+
 define ell- = e- mu- ta-
 define nu = ve vm vt
-define nubar = ve~ vm~ vt~generate p p > ell+ ell- @0
+define nubar = ve~ vm~ vt~
+generate p p > ell+ ell- @0
 output ${PLUGIN} ${PROCESS_NAME}_${BACKEND} --hel_recycling=False -nojpeg"
 elif [[ "$PROCESS_NAME" == "DY1j_LO_5f" ]]; then
     PROC_CARD_CONTENT="import model sm-no_b_mass
@@ -64,7 +67,8 @@ define j = p
 define ell+ = e+ mu+ ta+
 define ell- = e- mu- ta-
 define nu = ve vm vt
-define nubar = ve~ vm~ vt~generate p p > ell+ ell- j @0
+define nubar = ve~ vm~ vt~
+generate p p > ell+ ell- j @0
 output ${PLUGIN} ${PROCESS_NAME}_${BACKEND} --hel_recycling=False -nojpeg"
 elif [[ "$PROCESS_NAME" == "DY2j_LO_5f" ]]; then
     PROC_CARD_CONTENT="import model sm-no_b_mass
@@ -73,7 +77,8 @@ define j = p
 define ell+ = e+ mu+ ta+
 define ell- = e- mu- ta-
 define nu = ve vm vt
-define nubar = ve~ vm~ vt~generate p p > ell+ ell- j j @0
+define nubar = ve~ vm~ vt~
+generate p p > ell+ ell- j j @0
 output ${PLUGIN} ${PROCESS_NAME}_${BACKEND} --hel_recycling=False -nojpeg"
 elif [[ "$PROCESS_NAME" == "DY3j_LO_5f" ]]; then
     PROC_CARD_CONTENT="import model sm-no_b_mass
@@ -82,7 +87,8 @@ define j = p
 define ell+ = e+ mu+ ta+
 define ell- = e- mu- ta-
 define nu = ve vm vt
-define nubar = ve~ vm~ vt~generate p p > ell+ ell- j j j @0
+define nubar = ve~ vm~ vt~
+generate p p > ell+ ell- j j j @0
 output ${PLUGIN} ${PROCESS_NAME}_${BACKEND} --hel_recycling=False -nojpeg"
 elif [[ "$PROCESS_NAME" == "DY4j_LO_5f" ]]; then
     PROC_CARD_CONTENT="import model sm-no_b_mass
@@ -91,7 +97,8 @@ define j = p
 define ell+ = e+ mu+ ta+
 define ell- = e- mu- ta-
 define nu = ve vm vt
-define nubar = ve~ vm~ vt~generate p p > ell+ ell- j j j j @0
+define nubar = ve~ vm~ vt~
+generate p p > ell+ ell- j j j j @0
 output ${PLUGIN} ${PROCESS_NAME}_${BACKEND} --hel_recycling=False -nojpeg"
 elif [[ "$PROCESS_NAME" == "DY012j_LO_5f" ]]; then
     PROC_CARD_CONTENT="import model sm-no_b_mass
@@ -133,6 +140,8 @@ cp templates/${PROCESS_TYPE}/run_card.dat ${PROCESS_NAME}_${BACKEND}/${PROCESS_N
 
 # Create customize_card.dat by replacing [BACKEND] with $BACKEND
 sed "s|\[BACKEND\]|$BACKEND|" templates/${PROCESS_TYPE}/customizecards.dat > ${PROCESS_NAME}_${BACKEND}/${PROCESS_NAME}_${BACKEND}_customizecards.dat
+# Remove the unwanted line from customizecards.dat when backend is UPSTREAM
+sed -i '/set cudacpp_backend UPSTREAM/d' ${PROCESS_NAME}_${BACKEND}/${PROCESS_NAME}_${BACKEND}_customizecards.dat
 
 # Create set_nb_core.patch by replacing [NB_CORE] with $NB_CORE
 sed "s|\[NB_CORE\]|$NB_CORE|" templates/${PROCESS_TYPE}/set_nb_core.patch > ${PROCESS_NAME}_${BACKEND}/${PROCESS_NAME}_${BACKEND}_set_nb_core.patch
