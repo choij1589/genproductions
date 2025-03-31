@@ -34,7 +34,7 @@ mkdir -p ${PROCESS_NAME}_${BACKEND}
 
 # Determine plugin based on backend
 PLUGIN=""
-if [[ "$BACKEND" == "UPSTREAM" ]]; then
+if [[ "$BACKEND" == "UPSTREAM" || "$BACKEND" == "LEGACY" ]]; then
     PLUGIN=""
 elif [[ "$BACKEND" == "FORTRAN" ]]; then
     PLUGIN="madevent"
@@ -126,6 +126,68 @@ add process p p > ell+ ell- j j @2
 add process p p > ell+ ell- j j j @3
 add process p p > ell+ ell- j j j j @4
 output ${PLUGIN} ${PROCESS_NAME}_${BACKEND} --hel_recycling=False -nojpeg"
+elif [[ "$PROCESS_NAME" == "W0j_LO_5f" ]]; then
+    PROC_CARD_CONTENT="import model sm-no_b_mass
+define ell+ = e+ mu+ ta+
+define ell- = e- mu- ta-
+define vl = ve vm vt
+define vl~ = ve~ vm~ vt~
+generate p p > ell+ vl $ t t~ h @0
+add process p p > ell- vl~ $ t t~ h @1
+output ${PLUGIN} ${PROCESS_NAME}_${BACKEND} --hel_recycling=False -nojpeg"
+elif [[ "$PROCESS_NAME" == "W1j_LO_5f" ]]; then
+    PROC_CARD_CONTENT="import model sm-no_b_mass
+define ell+ = e+ mu+ ta+
+define ell- = e- mu- ta-
+define vl = ve vm vt
+define vl~ = ve~ vm~ vt~
+generate p p > ell+ vl j $ t t~ h @0
+add process p p > ell- vl~ j $ t t~ h @1
+output ${PLUGIN} ${PROCESS_NAME}_${BACKEND} --hel_recycling=False -nojpeg"
+elif [[ "$PROCESS_NAME" == "W2j_LO_5f" ]]; then
+    PROC_CARD_CONTENT="import model sm-no_b_mass
+define ell+ = e+ mu+ ta+
+define ell- = e- mu- ta-
+define vl = ve vm vt
+define vl~ = ve~ vm~ vt~
+generate p p > ell+ vl j j $ t t~ h @0
+add process p p > ell- vl~ j j $ t t~ h @1
+output ${PLUGIN} ${PROCESS_NAME}_${BACKEND} --hel_recycling=False -nojpeg"
+elif [[ "$PROCESS_NAME" == "W3j_LO_5f" ]]; then
+    PROC_CARD_CONTENT="import model sm-no_b_mass
+define ell+ = e+ mu+ ta+
+define ell- = e- mu- ta-
+define vl = ve vm vt
+define vl~ = ve~ vm~ vt~
+generate p p > ell+ vl j j j $ t t~ h @0
+add process p p > ell- vl~ j j j $ t t~ h @1
+output ${PLUGIN} ${PROCESS_NAME}_${BACKEND} --hel_recycling=False -nojpeg"
+elif [[ "$PROCESS_NAME" == "W4j_LO_5f" ]]; then
+    PROC_CARD_CONTENT="import model sm-no_b_mass
+define ell+ = e+ mu+ ta+
+define ell- = e- mu- ta-
+define vl = ve vm vt
+define vl~ = ve~ vm~ vt~
+generate p p > ell+ vl j j j j $ t t~ h @0
+add process p p > ell- vl~ j j j j $ t t~ h @1
+output ${PLUGIN} ${PROCESS_NAME}_${BACKEND} --hel_recycling=False -nojpeg"
+elif [[ "$PROCESS_NAME" == "W01234j_LO_5f" ]]; then
+    PROC_CARD_CONTENT="import model sm-no_b_mass
+define ell+ = e+ mu+ ta+
+define ell- = e- mu- ta-
+define vl = ve vm vt
+define vl~ = ve~ vm~ vt~
+generate p p > ell+ vl $ t t~ h @0
+add process p p > ell- vl~ $ t t~ h @1
+add process p p > ell+ vl j $ t t~ h @2
+add process p p > ell- vl~ j $ t t~ h @3
+add process p p > ell+ vl j j $ t t~ h @4
+add process p p > ell- vl~ j j $ t t~ h @5
+add process p p > ell+ vl j j j $ t t~ h @6
+add process p p > ell- vl~ j j j $ t t~ h @7
+add process p p > ell+ vl j j j j $ t t~ h @8
+add process p p > ell- vl~ j j j j $ t t~ h @9
+output ${PLUGIN} ${PROCESS_NAME}_${BACKEND} --hel_recycling=False -nojpeg"
 else
     echo "Error: proc_card.dat not defined for $PROCESS_NAME"
     exit 1
@@ -140,8 +202,9 @@ cp templates/${PROCESS_TYPE}/run_card.dat ${PROCESS_NAME}_${BACKEND}/${PROCESS_N
 
 # Create customize_card.dat by replacing [BACKEND] with $BACKEND
 sed "s|\[BACKEND\]|$BACKEND|" templates/${PROCESS_TYPE}/customizecards.dat > ${PROCESS_NAME}_${BACKEND}/${PROCESS_NAME}_${BACKEND}_customizecards.dat
-# Remove the unwanted line from customizecards.dat when backend is UPSTREAM
-sed -i '/set cudacpp_backend UPSTREAM/d' ${PROCESS_NAME}_${BACKEND}/${PROCESS_NAME}_${BACKEND}_customizecards.dat
+# Remove the unwanted line from customizecards.dat when backend is UPSTREAM or LEGACY
+sed -i '/set run_card cudacpp_backend UPSTREAM/d' ${PROCESS_NAME}_${BACKEND}/${PROCESS_NAME}_${BACKEND}_customizecards.dat
+sed -i '/set run_card cudacpp_backend LEGACY/d' ${PROCESS_NAME}_${BACKEND}/${PROCESS_NAME}_${BACKEND}_customizecards.dat
 
 # Create set_nb_core.patch by replacing [NB_CORE] with $NB_CORE
 sed "s|\[NB_CORE\]|$NB_CORE|" templates/${PROCESS_TYPE}/set_nb_core.patch > ${PROCESS_NAME}_${BACKEND}/${PROCESS_NAME}_${BACKEND}_set_nb_core.patch

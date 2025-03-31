@@ -21,7 +21,7 @@ set param_card mass 6 172.5
 set param_card DECAY 6 1.311
 set param_card yukawa 6 172.5
 
-# User settings
+# user settings
 set run_card mmll 50.0
-set sde_strategy 1
-set cudacpp_backend CPPAVX2
+set run_card sde_strategy 1
+set run_card cudacpp_backend CPPAVX2
