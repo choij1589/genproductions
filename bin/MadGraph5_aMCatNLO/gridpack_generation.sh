@@ -137,12 +137,12 @@ make_gridpack () {
     
     MG_EXT=".tar.gz"
     if [[ "$name" == *"UPSTREAM"* ]]; then
-      MG="MG5_aMC_v3.6.1.beta${MG_EXT}"
-      MGSOURCE="/pscratch/sd/c/choij/workspace/cms-madgraph4gpu-integration/epoch1/tarballs/${MG}"
-      MGBASEDIRORIG="MG5_aMC_v3_6_1"
+      MG="MG5_aMC_v3.6.2${MG_EXT}"
+      MGSOURCE="/pscratch/sd/c/choij/workspace/cms-madgraph4gpu-integration/epoch1/validation/tarballs/${MG}"
+      MGBASEDIRORIG="MG5_aMC_v3_6_2"
     else
-      MG="mg4gpu_2025-01-20${MG_EXT}"
-      MGSOURCE="/pscratch/sd/c/choij/workspace/cms-madgraph4gpu-integration/epoch1/tarballs/${MG}"
+      MG="mg4gpu_2025-03-31${MG_EXT}"
+      MGSOURCE="/pscratch/sd/c/choij/workspace/cms-madgraph4gpu-integration/epoch1/validation/tarballs/${MG}"
       MGBASEDIRORIG="madgraph4gpu/MG5aMC/mg5amcnlo/"
     fi
     isscratchspace=0
