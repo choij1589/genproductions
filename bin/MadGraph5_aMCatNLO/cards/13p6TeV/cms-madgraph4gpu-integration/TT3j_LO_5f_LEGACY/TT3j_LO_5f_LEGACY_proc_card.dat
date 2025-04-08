@@ -1,0 +1,4 @@
+import model sm-ckm_no_b_mass
+
+generate p p > t t~ j j j @0
+output TTto4Q-3Jets_madgraphMLM-pythia8 --hel_recycling=False -nojpeg

@@ -1,0 +1,5 @@
+import model sm-ckm_no_b_mass
+
+generate p p > t t~ j, (t > w+ b, w+ > j j), (t~ > w- b~, w- > j j)  @0
+#generate p p > t t~ j @0
+output madevent_gpu TT1j_LO_5f_CUDA --hel_recycling=False -nojpeg
