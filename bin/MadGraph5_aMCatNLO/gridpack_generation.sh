@@ -683,8 +683,11 @@ make_gridpack () {
       cp -a $MGBASEDIRORIG/ gridpack/mgbasedir
     
       cd gridpack
-      
-      cp $PRODHOME/runcmsgrid_LO.sh ./runcmsgrid.sh
+      if [[ "$name" == *"LEGACY"* ]]; then
+        cp $PRODHOME/runcmsgrid_LO.sh ./runcmsgrid.sh
+      else
+        cp $PRODHOME/runcmsgrid_LO.parallel.sh ./runcmsgrid.sh
+      fi
     fi
     
     sed -i s/SCRAM_ARCH_VERSION_REPLACE/${scram_arch}/g runcmsgrid.sh
