@@ -1,0 +1,4 @@
+import model sm-ckm_no_b_mass
+
+generate p p > t t~ j j @0
+output  TT2j_LO_5f_LEGACY --hel_recycling=False -nojpeg

@@ -188,6 +188,11 @@ add process p p > ell- vl~ j j j $ t t~ h @7
 add process p p > ell+ vl j j j j $ t t~ h @8
 add process p p > ell- vl~ j j j j $ t t~ h @9
 output ${PLUGIN} ${PROCESS_NAME}_${BACKEND} --hel_recycling=False -nojpeg"
+elif [[ "$PROCESS_NAME" == "TT2j_LO_5f" ]]; then
+    PROC_CARD_CONTENT="import model sm-ckm_no_b_mass
+
+generate p p > t t~ j j @0
+output ${PLUGIN} ${PROCESS_NAME}_${BACKEND} --hel_recycling=False -nojpeg"
 else
     echo "Error: proc_card.dat not defined for $PROCESS_NAME"
     exit 1
@@ -202,9 +207,15 @@ cp templates/${PROCESS_TYPE}/run_card.dat ${PROCESS_NAME}_${BACKEND}/${PROCESS_N
 
 # Create customize_card.dat by replacing [BACKEND] with $BACKEND
 sed "s|\[BACKEND\]|$BACKEND|" templates/${PROCESS_TYPE}/customizecards.dat > ${PROCESS_NAME}_${BACKEND}/${PROCESS_NAME}_${BACKEND}_customizecards.dat
+
 # Remove the unwanted line from customizecards.dat when backend is UPSTREAM or LEGACY
 sed -i '/set run_card cudacpp_backend UPSTREAM/d' ${PROCESS_NAME}_${BACKEND}/${PROCESS_NAME}_${BACKEND}_customizecards.dat
 sed -i '/set run_card cudacpp_backend LEGACY/d' ${PROCESS_NAME}_${BACKEND}/${PROCESS_NAME}_${BACKEND}_customizecards.dat
+
+# Create madspin_card.dat for the TTbar process
+if [[ "$PROCESS_NAME" == "TT"* ]]; then
+    cp templates/${PROCESS_TYPE}/madspin_card.dat ${PROCESS_NAME}_${BACKEND}/${PROCESS_NAME}_${BACKEND}_madspin_card.dat
+fi
 
 # Create set_nb_core.patch by replacing [NB_CORE] with $NB_CORE
 sed "s|\[NB_CORE\]|$NB_CORE|" templates/${PROCESS_TYPE}/set_nb_core.patch > ${PROCESS_NAME}_${BACKEND}/${PROCESS_NAME}_${BACKEND}_set_nb_core.patch

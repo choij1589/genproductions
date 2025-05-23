@@ -1,20 +1,22 @@
 #!/bin/bash
-PROCESS_ARR=("DY0j_LO_5f" "DY1j_LO_5f" "DY2j_LO_5f" "DY3j_LO_5f"
-             "W0j_LO_5f" "W1j_LO_5f" "W2j_LO_5f" "W3j_LO_5f")
+PROCESS_NAMEs=("TT2j_LO_5f")
 
-for PROCESS in "${PROCESS_ARR[@]}"; do
-    shifter --image=docker:cmssw/el9:x86_64 --module=cvmfs,gpu \
-    time ./gridpack_generation.sh ${PROCESS}_UPSTREAM cards/13p6TeV/cms-madgraph4gpu-integration/${PROCESS}_UPSTREAM
+for PROCESS in "${PROCESS_NAMEs[@]}"; do
+    shifter --image=docker:cmssw/el8:x86_64 --module=cvmfs,gpu \
+    time ./gridpack_generation.sh ${PROCESS}_UPSTREAM cards/13p6TeV/cms-madgraph4gpu-integration/${PROCESS}_UPSTREAM > ${PROCESS}_UPSTREAM.every.log 2>&1
 
-    shifter --image=docker:cmssw/el9:x86_64 --module=cvmfs,gpu \
-    time ./gridpack_generation.sh ${PROCESS}_LEGACY cards/13p6TeV/cms-madgraph4gpu-integration/${PROCESS}_LEGACY
+    shifter --image=docker:cmssw/el8:x86_64 --module=cvmfs,gpu \
+    time ./gridpack_generation.sh ${PROCESS}_LEGACY cards/13p6TeV/cms-madgraph4gpu-integration/${PROCESS}_LEGACY > ${PROCESS}_LEGACY.every.log 2>&1
 
-    shifter --image=docker:cmssw/el9:x86_64 --module=cvmfs,gpu \
-    time ./gridpack_generation.sh ${PROCESS}_FORTRAN cards/13p6TeV/cms-madgraph4gpu-integration/${PROCESS}_FORTRAN
+    shifter --image=docker:cmssw/el8:x86_64 --module=cvmfs,gpu \
+    time ./gridpack_generation.sh ${PROCESS}_FORTRAN cards/13p6TeV/cms-madgraph4gpu-integration/${PROCESS}_FORTRAN > ${PROCESS}_FORTRAN.every.log 2>&1
 
-    shifter --image=docker:cmssw/el9:x86_64 --module=cvmfs,gpu \
-    time ./gridpack_generation.sh ${PROCESS}_CPPNONE cards/13p6TeV/cms-madgraph4gpu-integration/${PROCESS}_CPPNONE
+    shifter --image=docker:cmssw/el8:x86_64 --module=cvmfs,gpu \
+    time ./gridpack_generation.sh ${PROCESS}_CPPNONE cards/13p6TeV/cms-madgraph4gpu-integration/${PROCESS}_CPPNONE > ${PROCESS}_CPPNONE.every.log 2>&1 
 
-    shifter --image=docker:cmssw/el9:x86_64 --module=cvmfs,gpu \
-    time ./gridpack_generation.sh ${PROCESS}_CPPAVX2 cards/13p6TeV/cms-madgraph4gpu-integration/${PROCESS}_CPPAVX2
+    shifter --image=docker:cmssw/el8:x86_64 --module=cvmfs,gpu \
+    time ./gridpack_generation.sh ${PROCESS}_CPPAVX2 cards/13p6TeV/cms-madgraph4gpu-integration/${PROCESS}_CPPAVX2 > ${PROCESS}_CPPAVX2.every.log 2>&1
+    
+    shifter --image=docker:cmssw/el8:x86_64 --module=cvmfs,gpu \
+    time ./gridpack_generation.sh ${PROCESS}_CUDA cards/13p6TeV/cms-madgraph4gpu-integration/${PROCESS}_CUDA > ${PROCESS}_CUDA.every.log 2>&1
 done

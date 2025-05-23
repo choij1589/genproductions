@@ -137,7 +137,7 @@ make_gridpack () {
     
     MG_EXT=".tar.gz"
     if [[ "$name" == *"UPSTREAM"* ]]; then
-      MG="MG5_aMC_v3.6.2${MG_EXT}"
+      MG="MG5_aMC_v3.6.2_patch2${MG_EXT}"
       MGSOURCE="/pscratch/sd/c/choij/workspace/cms-madgraph4gpu-integration/epoch1/validation/tarballs/${MG}"
       MGBASEDIRORIG="MG5_aMC_v3_6_2"
     elif [[ "$name" == *"LEGACY"* ]]; then
@@ -145,7 +145,7 @@ make_gridpack () {
       MGSOURCE="/pscratch/sd/c/choij/workspace/cms-madgraph4gpu-integration/epoch1/validation/tarballs/${MG}"
       MGBASEDIRORIG="MG5_aMC_v2_9_18"
     else
-      MG="mg4gpu_2025-03-31${MG_EXT}"
+      MG="mg4gpu_2025-04-25${MG_EXT}"
       MGSOURCE="/pscratch/sd/c/choij/workspace/cms-madgraph4gpu-integration/epoch1/validation/tarballs/${MG}"
       MGBASEDIRORIG="madgraph4gpu/MG5aMC/mg5amcnlo/"
     fi
