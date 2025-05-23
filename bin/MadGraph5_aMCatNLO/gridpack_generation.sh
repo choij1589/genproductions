@@ -138,15 +138,15 @@ make_gridpack () {
     MG_EXT=".tar.gz"
     if [[ "$name" == *"UPSTREAM"* ]]; then
       MG="MG5_aMC_v3.6.2_patch2${MG_EXT}"
-      MGSOURCE="/pscratch/sd/c/choij/workspace/cms-madgraph4gpu-integration/epoch1/validation/tarballs/${MG}"
+      MGSOURCE="root://eosuser.cern.ch//eos/user/c/choij/public/MG4GPU/tarballs/${MG}"
       MGBASEDIRORIG="MG5_aMC_v3_6_2"
     elif [[ "$name" == *"LEGACY"* ]]; then
       MG="MG5_aMC_v2.9.18${MG_EXT}"
-      MGSOURCE="/pscratch/sd/c/choij/workspace/cms-madgraph4gpu-integration/epoch1/validation/tarballs/${MG}"
+      MGSOURCE="root://eosuser.cern.ch//eos/user/c/choij/public/MG4GPU/tarballs/${MG}"
       MGBASEDIRORIG="MG5_aMC_v2_9_18"
     else
       MG="mg4gpu_2025-04-25${MG_EXT}"
-      MGSOURCE="/pscratch/sd/c/choij/workspace/cms-madgraph4gpu-integration/epoch1/validation/tarballs/${MG}"
+      MGSOURCE="root://eosuser.cern.ch//eos/user/c/choij/public/MG4GPU/tarballs/${MG}"
       MGBASEDIRORIG="madgraph4gpu/MG5aMC/mg5amcnlo/"
     fi
     isscratchspace=0
@@ -189,8 +189,12 @@ make_gridpack () {
       #Copy, Unzip and Delete the MadGraph tarball#
       #############################################
       echo "Preparing mg4gpu directory from ${MGSOURCE}"
-      tar xzf ${MGSOURCE}
-      #pigz -d -c ${MGSOURCE} | tar -x
+      mkdir -p tmp && xrdcp ${MGSOURCE} tmp/
+      if command -v pigz > /dev/null 2>&1; then
+        pigz -d -c tmp/${MG} | tar -x && rm -rf tmp
+      else
+        tar -xf tmp/${MG} && rm -rf tmp
+      fi
     
       #############################################
       #Apply any necessary patches on top of official release

@@ -190,8 +190,18 @@ add process p p > ell- vl~ j j j j $ t t~ h @9
 output ${PLUGIN} ${PROCESS_NAME}_${BACKEND} --hel_recycling=False -nojpeg"
 elif [[ "$PROCESS_NAME" == "TT2j_LO_5f" ]]; then
     PROC_CARD_CONTENT="import model sm-ckm_no_b_mass
-
 generate p p > t t~ j j @0
+output ${PLUGIN} ${PROCESS_NAME}_${BACKEND} --hel_recycling=False -nojpeg"
+elif [[ "$PROCESS_NAME" == "TT3j_LO_5f" ]]; then
+    PROC_CARD_CONTENT="import model sm-ckm_no_b_mass
+generate p p > t t~ j j j @0
+output ${PLUGIN} ${PROCESS_NAME}_${BACKEND} --hel_recycling=False -nojpeg"
+elif [[ "$PROCESS_NAME" == "TT0123j_LO_5f" ]]; then
+    PROC_CARD_CONTENT="import model sm-ckm_no_b_mass
+generate p p > t t~ @0
+add process p p > t t~ j @1
+add process p p > t t~ j j @2
+add process p p > t t~ j j j @3
 output ${PLUGIN} ${PROCESS_NAME}_${BACKEND} --hel_recycling=False -nojpeg"
 else
     echo "Error: proc_card.dat not defined for $PROCESS_NAME"

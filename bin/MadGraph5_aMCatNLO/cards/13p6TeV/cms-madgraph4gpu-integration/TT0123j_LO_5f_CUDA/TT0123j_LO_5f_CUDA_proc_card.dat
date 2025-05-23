@@ -1,0 +1,6 @@
+import model sm-ckm_no_b_mass
+generate p p > t t~ @0
+add process p p > t t~ j @1
+add process p p > t t~ j j @2
+add process p p > t t~ j j j @3
+output madevent_gpu TT0123j_LO_5f_CUDA --hel_recycling=False -nojpeg
